@@ -32,6 +32,20 @@ The UMD build is also available via [unpkg](https://unpkg.com):
 
 Here's a quick example of how you can compose HTML forms with Formit:
 
+#### 1. Prepare the HTML
+
+Create somewhere for your Formit elements to render to:
+
+```html
+<form>
+  <div id="Form"></div>
+</form>
+```
+
+#### 2. Generate with Formit
+
+Target your selector, and pass in the Formit elements you want to generate:
+
 ```js
 Formit('#form', [
   {
@@ -52,7 +66,11 @@ Formit('#form', [
 ])
 ```
 
-#### Rendered HTML
+#### 3. Check out your rendered form
+
+Aw yea! Your selector is now populated with ready-to-use form elements.
+
+A cool feature of Formit is that it'll automatically generate unique IDs and associate the `<label>` (if generated) with the field.
 
 ```html
 <div id="form">
@@ -73,8 +91,6 @@ Formit('#form', [
   </div>
 </div>
 ```
-
-A cool feature of Formit is that it'll automatically generate unique IDs and associate the `<label>` (if generated) with the field.
 
 
 ## 📒 Notes
