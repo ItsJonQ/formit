@@ -2,8 +2,10 @@
 
 > A speedy way to create HTML forms.
 
-* **Tiny**, around 1.35 KB gzipped
-* **Zero dependences**
+⚡️ **Tiny**, around 1.35 KB gzipped
+🙌 **Zero dependences**
+🖌 **Styleless** by design, allowing you to add your own.
+
 
 **[Check out the demo](http://formit.surge.sh/)**
 
