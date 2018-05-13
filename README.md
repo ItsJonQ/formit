@@ -5,6 +5,8 @@
 * **Tiny**, around 1.35 KB gzipped
 * **Zero dependences**
 
+**[Check out the demo](http://formit.surge.sh/)**
+
 ## 🔧 Installation
 
 ```
@@ -26,9 +28,7 @@ The UMD build is also available via [unpkg](https://unpkg.com):
 
 ## 🕹 Usage
 
-Here's a quick example of how you can compose HTML forms with Formit.
-
-**[Check out the demo](http://formit.surge.sh/)**
+Here's a quick example of how you can compose HTML forms with Formit:
 
 ```js
 Formit('#form', [
