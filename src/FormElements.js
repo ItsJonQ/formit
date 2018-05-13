@@ -54,4 +54,6 @@ const FormElements = (
   onDidRender(mountNode,{ elements, options })
 }
 
+window.FormElements = FormElements
+
 export default FormElements

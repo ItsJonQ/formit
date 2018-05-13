@@ -70,6 +70,7 @@ const renderFormElement = (
 
   if (isNested) {
     addClass(node, nestedFieldClassName)
+    addClass(node, 'is-nested')
   }
 
   return node
