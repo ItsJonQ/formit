@@ -11,6 +11,18 @@
 npm install --save formit
 ```
 
+Then, import it into your Javascript workflow:
+
+```
+import Formit from 'formit'
+```
+
+The UMD build is also available via [unpkg](https://unpkg.com):
+
+```
+<script src="https://unpkg.com/form/dist/index.umd.js"></script>
+```
+
 
 ## 🕹 Usage
 
