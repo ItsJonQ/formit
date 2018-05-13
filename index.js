@@ -3,12 +3,29 @@
 /**
  * Utilities: DOM
  */
-const el = (selector: string) => document.createElement(selector)
-const addClass = (node, className) => node.classList.add(className)
+const el = (selector: string) => (
+  selector &&
+  document.createElement(selector)
+)
+const addClass = (node, className: string) => (
+  node &&
+  className &&
+  node.classList.add(className)
+)
+
+const eachProps = (props: object, callback: func) =>
+  Object.keys(props).forEach(callback)
 
 const addPropsToNode = (node: object, props: object) => {
-  Object.keys(props).forEach(key => {
-    node.setAttribute(key, props[key])
+  eachProps(props, key => {
+    const value = props[key]
+    if (key === 'style') {
+      eachProps(value, styleProp => {
+        node.style[styleProp] = value[styleProp]
+      })
+    } else {
+      node.setAttribute(key, value)
+    }
   })
 
   return node
@@ -17,7 +34,7 @@ const addPropsToNode = (node: object, props: object) => {
 /**
  * Utilities: ID
  */
-const createFormTokenName = token => `FormElements-${token}`
+const createFormTokenName = (token: number | string) => `FormElements-${token}`
 const createFormId = (id: number) => createFormTokenName(id)
 
 
@@ -36,29 +53,64 @@ const createLabel = (label: string, props: object) => {
 }
 
 const createField = (props: object) => {
-  const { type, ...rest } = props
+  const { fieldClassName, submitClassName, type, ...rest } = props
   const nodeType = type.toLowerCase() === 'textarea' ?
     'textarea' :
     'input'
   const node = el(nodeType)
   if (nodeType !== 'textarea') { node.type = type }
+  const className = type === 'submit' ? submitClassName : fieldClassName
+
   addPropsToNode(node, rest)
   addClass(node, createFormTokenName('Field'))
+  addClass(node, className)
 
   return node 
 }
 
-const renderFormElement = (props: object, index: number) => {
+const renderFormElement = (
+  props: object,
+  index: number,
+  classNames: object = {}
+) => {
+  const {
+    fieldGroupClassName,
+    fieldClassName,
+    labelClassName,
+    submitClassName
+  } = classNames
+
   const node = el('div')
-  const { label, type, ...rest } = props
-  const id = createFormId(index)
-  const labelNode = createLabel(label, { for: id })
-  const fieldNode = createField({ type, id, ...rest })
-
-  if (!labelNode && !fieldNode) return null
-
   addClass(node, createFormTokenName(`FieldGroup`))
   addClass(node, createFormTokenName(`id-${index}`))
+  addClass(node, fieldGroupClassName)
+
+  if (Array.isArray(props)) {
+    const nodes = props.map((p, i) =>
+      renderFormElement(p, `${index}-${i}`, classNames)
+    )
+    if (nodes) {
+      nodes.forEach(n => node.appendChild(n))
+    }
+    addClass(node, 'has-fieldGroups')
+    return node
+  }
+
+  const { label, type, ...rest } = props
+  const id = createFormId(index)
+  const labelNode = createLabel(label, {
+    class: labelClassName,
+    for: id,
+  })
+  const fieldNode = createField({
+    type,
+    id,
+    ...rest,
+    fieldClassName,
+    submitClassName
+  })
+
+  if (!labelNode && !fieldNode) return null
 
   if (labelNode) {
     node.appendChild(labelNode)
@@ -74,9 +126,13 @@ const renderFormElement = (props: object, index: number) => {
   return node
 }
 
-const renderForm = (mountNode: object, props: object) => {
-  props.forEach((prop, index) => {
-    const element = renderFormElement(prop, index)
+const renderForm = (
+  mountNode: object,
+  els: object,
+  classNames: object
+) => {
+  els.forEach((prop, index) => {
+    const element = renderFormElement(prop, index, classNames)
     mountNode.appendChild(element)
   })
 }
@@ -84,38 +140,80 @@ const renderForm = (mountNode: object, props: object) => {
 /**
  * Main factory
  */
-const Form = (selector = '', props = []) => {
+const defaultOptions = {
+  fieldGroupClassName: '',
+  fieldClassName: '',
+  labelClassName: '',
+  submitClassName: '',
+  onRendered: () => {}
+}
+
+const FormElements = (
+  selector:string = '',
+  els:array = [],
+  options:object = defaultOptions
+) => {
   if (!selector) return
   const mountNode = document.querySelector(selector)
   if (!mountNode) return
 
-  renderForm(mountNode, props)
+  const props = {...defaultOptions, ...options}
+  const {
+    onRendered,
+    ...otherProps
+  } = props
+  const classNames = {...otherProps}
+
+  renderForm(mountNode, els, classNames)
+
+  onRendered(mountNode)
 }
 
 
 /**
  * Example
  */
-Form('#form', [
-  {
-    label: 'First name',
-    type: 'text',
-    autofocus: true
-  },
-  {
-    label: 'Last name',
-    type: 'text',
-  },
+FormElements('#form', [
+  /**
+   * Name group
+   */
+  [
+    {
+      label: 'First name',
+      type: 'text',
+      placeholder: 'First',
+      autofocus: true
+    },
+    {
+      label: 'Middle name',
+      type: 'text',
+      placeholder: 'M',
+      style: {
+        width: '20px'
+      }
+    },
+    {
+      label: 'Last name',
+      placeholder: 'Last',
+      type: 'text',
+    },
+  ],
+  /**
+   * Name group
+   */
   {
     label: 'Email',
     type: 'email',
+    placeholder: 'email@domain.com',
     required: true
   },
   {
-    label: 'Address',
-    type: 'text',
-  },
-  {
     type: 'submit',
+    value: 'Go!'
   },
-])
+], {
+  fieldGroupClassName: 'form-group',
+  fieldClassName: 'form-control',
+  submitClassName: 'btn',
+  onRendered: () => { console.log('done') }
+})
