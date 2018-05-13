@@ -12,7 +12,13 @@
     "bundle": "microbundle build --external all",
     "clean": "rm -rf dist",
     "start": "parcel index.html",
+    "parcel:build": "parcel build index.html -d public",
+    "parcel:clean": "rm -rf public",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "surge:cname": "echo 'formit.surge.sh' > public/CNAME",
+    "surge:predeploy": "npm run parcel:clean && npm run parcel:build && npm run surge:cname",
+    "surge:deploy": "surge ./public",
+    "surge": "npm run surge:predeploy && npm run surge:deploy",
     "release": "np --no-yarn --no-publish",
     "version": "npm run build",
     "postversion": "npm publish"
@@ -33,6 +39,7 @@
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "microbundle": "0.4.4",
     "np": "2.20.1",
-    "parcel": "1.8.1"
+    "parcel": "1.8.1",
+    "surge": "0.20.1"
   }
 }
