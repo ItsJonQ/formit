@@ -71,3 +71,13 @@ Formit('#form', [
 ```
 
 A cool feature of Formit is that it'll automatically generate unique IDs and associate the `<label>` (if generated) with the field.
+
+
+## 📒 Notes
+
+Tests and additional docs coming soon!
+
+
+## ❤️  Thanks
+
+A big thanks to [developit](https://github.com/developit) for his amazing tools and for being a source of inspiration.
