@@ -11,7 +11,6 @@ const renderForm = (
 
   if (options && options.classNames) {
     const { formClassName } = options.classNames
-    console.log(formClassName)
     addClass(mountNode, formClassName)
   }
 
